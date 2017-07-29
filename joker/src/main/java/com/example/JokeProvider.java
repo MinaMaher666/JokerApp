@@ -18,4 +18,8 @@ public class JokeProvider {
         Random random = new Random();
         return mJokes[random.nextInt(mJokes.length)];
     }
+
+    public static String getJokeTest() {
+        return mJokes[0];
+    }
 }

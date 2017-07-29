@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.jokelib.JokeActivity;
 import com.example.mina.myapplication.backend.myApi.MyApi;
@@ -26,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
     private String mSentJoke;
     private ProgressBar pb;
 
-    public static final String GENYMOTION_ROOTURL = "http://10.0.3.2:8080/_ah/api/";
-    public static final String EMULATOR_ROOTURL = "http://10.0.2.2:8080/_ah/api/";
+    public static final String GENYMOTION_ROOTURL   = "http://10.0.3.2:8080/_ah/api/";
+    public static final String EMULATOR_ROOTURL     = "http://10.0.2.2:8080/_ah/api/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
             pb.setVisibility(View.GONE);
 
             startActivity(jokeTellerIntent);
-//            Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
         }
     }
 
