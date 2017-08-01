@@ -10,16 +10,11 @@ public class JokeProvider {
 
 
     public static String[] getJokes() {
-        Random random = new Random();
         return mJokes;
     }
 
     public static String getJoke() {
         Random random = new Random();
         return mJokes[random.nextInt(mJokes.length)];
-    }
-
-    public static String getJokeTest() {
-        return mJokes[0];
     }
 }

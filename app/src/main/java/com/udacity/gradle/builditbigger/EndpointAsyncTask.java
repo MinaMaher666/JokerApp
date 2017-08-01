@@ -1,7 +1,6 @@
 package com.udacity.gradle.builditbigger;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.example.mina.myapplication.backend.myApi.MyApi;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -11,18 +10,12 @@ import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
 
 import java.io.IOException;
 
-/**
- * Created by mina on 29/07/17.
- */
 
-public class TestJokeAsyncTask extends AsyncTask<JokeListener, Void, String> {
+public class EndpointAsyncTask extends AsyncTask<Void, Void, String> {
     public MyApi myApiService = null;
 
-    private JokeListener mListener;
-
-
     @Override
-    protected String doInBackground(JokeListener... params) {
+    protected String doInBackground(Void... params) {
         if (myApiService == null) {
             MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory()
                     , null)
@@ -38,18 +31,12 @@ public class TestJokeAsyncTask extends AsyncTask<JokeListener, Void, String> {
             myApiService = builder.build();
         }
 
-        mListener = params[0];
-
         try {
-            return  myApiService.testJoke().execute().getData();
+            return  myApiService.getJoke().execute().getData();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return null;
     }
 
-    @Override
-    protected void onPostExecute(String s) {
-        mListener.onRecieveJoke(s);
-    }
 }

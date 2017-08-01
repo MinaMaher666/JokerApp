@@ -34,11 +34,4 @@ public class MyEndpoint {
         return response;
     }
 
-    @ApiMethod(name = "testJoke")
-    public MyBean testJoke() {
-        MyBean response = new MyBean();
-        response.setData(JokeProvider.getJokeTest());
-
-        return response;
-    }
 }

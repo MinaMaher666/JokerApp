@@ -2,7 +2,6 @@ package com.udacity.gradle.builditbigger;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -11,18 +10,10 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.example.jokelib.JokeActivity;
-import com.example.mina.myapplication.backend.myApi.MyApi;
-import com.google.api.client.extensions.android.http.AndroidHttp;
-import com.google.api.client.extensions.android.json.AndroidJsonFactory;
-import com.google.api.client.googleapis.services.AbstractGoogleClientRequest;
-import com.google.api.client.googleapis.services.GoogleClientRequestInitializer;
-
-import java.io.IOException;
 
 
 public class MainActivity extends AppCompatActivity {
     public static final String JOKE_KEY = "joke";
-    private String mSentJoke;
     private ProgressBar pb;
 
     public static final String GENYMOTION_ROOTURL   = "http://10.0.3.2:8080/_ah/api/";
@@ -60,56 +51,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void tellJoke(View view) {
-        new EndpointAsyncTask().execute();
-    }
+        final Context context = MainActivity.this;
 
-     public class EndpointAsyncTask extends AsyncTask<Void, Void, String> {
-        public MyApi myApiService = null;
-
-         @Override
-         protected void onPreExecute() {
-             pb.setVisibility(View.VISIBLE);
-         }
-
-         @Override
-        protected String doInBackground(Void... params) {
-            if (myApiService == null) {
-                MyApi.Builder builder = new MyApi.Builder(AndroidHttp.newCompatibleTransport(), new AndroidJsonFactory()
-                        , null)
-                        .setRootUrl(GENYMOTION_ROOTURL)
-                        .setApplicationName("Build It Bigger")
-                        .setGoogleClientRequestInitializer(new GoogleClientRequestInitializer() {
-                            @Override
-                            public void initialize(AbstractGoogleClientRequest<?> request) throws IOException {
-                                request.setDisableGZipContent(true);
-                            }
-                        });
-
-                myApiService = builder.build();
+        EndpointAsyncTask jokeFetcherTask = new EndpointAsyncTask() {
+            @Override
+            protected void onPreExecute() {
+                pb.setVisibility(View.VISIBLE);
             }
 
-            try {
-                return  myApiService.getJoke().execute().getData();
-            } catch (IOException e) {
-                e.printStackTrace();
+            @Override
+            protected void onPostExecute(String s) {
+                Class jokeActivityClass = JokeActivity.class;
+                Intent jokeTellerIntent = new Intent(context, jokeActivityClass);
+                jokeTellerIntent.putExtra(JOKE_KEY, s);
+                pb.setVisibility(View.GONE);
+                startActivity(jokeTellerIntent);
             }
-            return null;
-        }
+        };
 
-        @Override
-        protected void onPostExecute(String s) {
-            mSentJoke = s;
-            Context context = MainActivity.this;
-            Class jokeActivityClass = JokeActivity.class;
-
-            Intent jokeTellerIntent = new Intent(context, jokeActivityClass);
-            jokeTellerIntent.putExtra(JOKE_KEY, mSentJoke);
-
-
-            pb.setVisibility(View.GONE);
-
-            startActivity(jokeTellerIntent);
-        }
+        jokeFetcherTask.execute();
     }
-
 }
